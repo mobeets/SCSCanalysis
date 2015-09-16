@@ -7,67 +7,51 @@ function Summary = WithinAndAcrossrSC(EACHchRESP, Summary, ...
 %have now added in first attempt to classify SC neurons as v,vm,m pull out
 %all the within and between pairings that go with that...
 
-corrSClA1 = GetMatrixEntries(Summary.Matrices.CorrMatrixA1,SCChsLeft,SCChsLeft);
-corrSClA2 = GetMatrixEntries(Summary.Matrices.CorrMatrixA2,SCChsLeft,SCChsLeft);
-
-corrSCrA1 = GetMatrixEntries(Summary.Matrices.CorrMatrixA1,SCChsRight,SCChsRight);
-corrSCrA2 = GetMatrixEntries(Summary.Matrices.CorrMatrixA2,SCChsRight,SCChsRight);
-
-corrBetweenSCSCA1 = GetMatrixEntries(Summary.Matrices.CorrMatrixA1,SCChsLeft,SCChsRight);
-corrBetweenSCSCA2 = GetMatrixEntries(Summary.Matrices.CorrMatrixA2,SCChsLeft,SCChsRight);
-
-
-SClCorr = [nanmean(corrSClA1) nanmean(corrSClA2)];
-SClCorrSEM(1) = nanstd(corrSClA1) / sqrt(length(corrSClA1));
-SClCorrSEM(2) = nanstd(corrSClA2) / sqrt(length(corrSClA2));
-
-SCrCorr = [nanmean(corrSCrA1) nanmean(corrSCrA2)];
-SCrCorrSEM(1) = nanstd(corrSCrA1) / sqrt(length(corrSCrA1));
-SCrCorrSEM(2) = nanstd(corrSCrA2) / sqrt(length(corrSCrA2));
-
-SCSCCorr = [nanmean(corrBetweenSCSCA1) nanmean(corrBetweenSCSCA2)];
-SCSCCorrSEM(1) = nanstd(corrBetweenSCSCA1) / sqrt(length(corrBetweenSCSCA1));
-SCSCCorrSEM(2) = nanstd(corrBetweenSCSCA2) / sqrt(length(corrBetweenSCSCA2));
-
+[CrLLA1, CrLLA2, CrLL, CrLLSEM] = getCorrAndSEM(Summary, ...
+    SCChsLeft, SCChsLeft);
+[CrRRA1, CrRRA2, CrRR, CrRRSEM] = getCorrAndSEM(Summary, ...
+    SCChsRight, SCChsRight);
+[CrLRA1, CrLRA2, CrLR, CrLRSEM] = getCorrAndSEM(Summary, ...
+    SCChsLeft, SCChsRight);
 
 figure;
-      subplot(3,1,1)
-      hold on;
-      bar(SClCorr)
-      errorbar([1:2],SClCorr,SClCorrSEM,SClCorrSEM,'.k')
-      title('within left SC')
-      set(gca,'XTickLabel',{'attend 1','attend 2'},'XTick',[1 2]);
-      subplot(3,1,2)
-      hold on;
-      bar(SCrCorr)
-      errorbar([1:2],SCrCorr,SCrCorrSEM,SCrCorrSEM,'.k')
-      title('within right SC')
-      set(gca,'XTickLabel',{'attend 1','attend 2'},'XTick',[1 2]);
-      subplot(3,1,3)
-      hold on;
-      bar(SCSCCorr)
-      errorbar([1:2],SCSCCorr,SCSCCorrSEM,SCSCCorrSEM,'.k')
-      title('between the two SCs')
-      set(gca,'XTickLabel',{'attend 1','attend 2'},'XTick',[1 2]);
+
+subplot(3,1,1);
+hold on;
+bar(CrLL);
+errorbar([1:2],CrLL,CrLLSEM,CrLLSEM,'.k');
+title('within left SC');
+set(gca,'XTickLabel',{'attend 1','attend 2'},'XTick',[1 2]);
+
+subplot(3,1,2);
+hold on;
+bar(CrRR);
+errorbar([1:2],CrRR,CrRRSEM,CrRRSEM,'.k');
+title('within right SC');
+set(gca,'XTickLabel',{'attend 1','attend 2'},'XTick',[1 2]);
+
+subplot(3,1,3);
+hold on;
+bar(CrLR);
+errorbar([1:2],CrLR,CrLRSEM,CrLRSEM,'.k');
+title('between the two SCs');
+set(gca,'XTickLabel',{'attend 1','attend 2'},'XTick',[1 2]);
 
 % store values for later      
-Summary.rSC.corrSClA1 = corrSClA1;
-Summary.rSC.corrSClA2 = corrSClA2;
-Summary.rSC.corrSCrA1 = corrSCrA1;
-Summary.rSC.corrSCrA2 = corrSCrA2;
-Summary.rSC.corrBetweenSCSCA1 = corrBetweenSCSCA1;
-Summary.rSC.corrBetweenSCSCA2 = corrBetweenSCSCA2;
-
+Summary.rSC.corrSClA1 = CrLLA1;
+Summary.rSC.corrSClA2 = CrLLA2;
+Summary.rSC.corrSCrA1 = CrRRA1;
+Summary.rSC.corrSCrA2 = CrRRA2;
+Summary.rSC.corrBetweenSCSCA1 = CrLRA1;
+Summary.rSC.corrBetweenSCSCA2 = CrLRA2;
 
 % store avgs and SEM for later replotting
-Summary.rSC.SClAvgCorr = SClCorr;
-Summary.rSC.SCLAvgCorrSEM = SClCorrSEM;
-Summary.rSC.SCrAvgCorr = SCrCorr;
-Summary.rSC.SCrAvgCorrSEM = SCrCorrSEM;
-Summary.rSC.SCSCAvgCorr = SCSCCorr;
-Summary.rSC.SCSCAvgCorrSEM = SCSCCorrSEM;
-
-
+Summary.rSC.SClAvgCorr = CrLL;
+Summary.rSC.SCLAvgCorrSEM = CrLLSEM;
+Summary.rSC.SCrAvgCorr = CrRR;
+Summary.rSC.SCrAvgCorrSEM = CrRRSEM;
+Summary.rSC.SCSCAvgCorr = CrLR;
+Summary.rSC.SCSCAvgCorrSEM = CrLRSEM;
 
 %% everything below in this function has not been modified/fixed yet
 
@@ -186,4 +170,14 @@ Summary.rSC.SCSCAvgCorrSEM = SCSCCorrSEM;
 % Summary.rSC.MTSCVMCorrSEM = MTSCVMCorrSEM;
 % 
 
+end
+
+function [CrA1, CrA2, CrAvg, CrSEM] = getCorrAndSEM(Summary, ChsX, ChsY)
+    CrA1 = GetMatrixEntries(Summary.Matrices.CorrMatrixA1, ...
+        ChsX, ChsY);
+    CrA2 = GetMatrixEntries(Summary.Matrices.CorrMatrixA2, ...
+        ChsX, ChsY);
+    CrAvg = [nanmean(CrA1) nanmean(CrA2)];
+    CrSEM(1) = nanstd(CrA1) / sqrt(length(CrA1));
+    CrSEM(2) = nanstd(CrA2) / sqrt(length(CrA2));
 end

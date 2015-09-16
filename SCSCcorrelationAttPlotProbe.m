@@ -11,22 +11,22 @@ PlotFlg = 1;  %do you want the rSC matrix plotted?
 if ~sorted  % if not sorted
 % make correlation matrices
 for i = 1:length(EACHchRESP)
-        for j = 1:length(EACHchRESP)
-                    [r,p]=mccorrcoef(EACHchRESP{i}.A1resp,EACHchRESP{j}.A1resp);
-                    CorrMatrixA1(i,j) = r;
-                    [r,p]=mccorrcoef(EACHchRESP{i}.A2resp,EACHchRESP{j}.A2resp);
-                    CorrMatrixA2(i,j) = r;
-        end
+    for j = 1:length(EACHchRESP)
+        [r,p]=mccorrcoef(EACHchRESP{i}.A1resp,EACHchRESP{j}.A1resp);
+        CorrMatrixA1(i,j) = r;
+        [r,p]=mccorrcoef(EACHchRESP{i}.A2resp,EACHchRESP{j}.A2resp);
+        CorrMatrixA2(i,j) = r;
+    end
 end
 
 else   % if sorted and restructured.
 for i = 1:length(EACHchRESP)
-        for j = 1:length(EACHchRESP)
-                    [r,p]=mccorrcoef(EACHchRESP(i).A1resp,EACHchRESP(j).A1resp);
-                    CorrMatrixA1(i,j) = r;
-                    [r,p]=mccorrcoef(EACHchRESP(i).A2resp,EACHchRESP(j).A2resp);
-                    CorrMatrixA2(i,j) = r;               
-        end
+    for j = 1:length(EACHchRESP)
+        [r,p]=mccorrcoef(EACHchRESP(i).A1resp,EACHchRESP(j).A1resp);
+        CorrMatrixA1(i,j) = r;
+        [r,p]=mccorrcoef(EACHchRESP(i).A2resp,EACHchRESP(j).A2resp);
+        CorrMatrixA2(i,j) = r;               
+    end
 end
 
 end
@@ -75,32 +75,29 @@ Summary.Matrices.CorrMatrixA2 = CorrMatrixA2;
 %     end
 % else
     %get all avg rates for attend in Summary
-    for i = 1:length(EACHchRESP)
+for i = 1:length(EACHchRESP)
 
-        if i <=24  %left probe, right RF.  att 2 is in
-            AttOut = nanmean(EACHchRESP(i).A1resp);
-            AttIn = nanmean(EACHchRESP(i).A2resp);        
-        else  %right probe, leftt RF.  att 1 is in
-            AttIn = nanmean(EACHchRESP(i).A1resp);
-            AttOut = nanmean(EACHchRESP(i).A2resp);        
-        end
-        
-            Summary.Rates.AttIndex(i) = (AttIn - AttOut) / (AttIn + AttOut); 
-           
-            Summary.Rates.countsA1{i} = EACHchRESP(i).A1resp;
-            Summary.Rates.countsA2{i} = EACHchRESP(i).A2resp;
+    if i <=24  %left probe, right RF.  att 2 is in
+        AttOut = nanmean(EACHchRESP(i).A1resp);
+        AttIn = nanmean(EACHchRESP(i).A2resp);        
+    else  %right probe, leftt RF.  att 1 is in
+        AttIn = nanmean(EACHchRESP(i).A1resp);
+        AttOut = nanmean(EACHchRESP(i).A2resp);        
+    end
 
-            [p,h]=ranksum(Summary.Rates.countsA1{i},Summary.Rates.countsA2{i});
-            Summary.Rates.SigFlg(i) = h;
-            
-            Summary.Rates.avgA1(i) = nanmean(EACHchRESP(i).A1resp);
-            Summary.Rates.avgA2(i) = nanmean(EACHchRESP(i).A2resp);
-            
+    Summary.Rates.AttIndex(i) = (AttIn - AttOut) / (AttIn + AttOut); 
 
-        
-    end     
+    Summary.Rates.countsA1{i} = EACHchRESP(i).A1resp;
+    Summary.Rates.countsA2{i} = EACHchRESP(i).A2resp;
+
+    [p,h]=ranksum(Summary.Rates.countsA1{i},Summary.Rates.countsA2{i});
+    Summary.Rates.SigFlg(i) = h;
+
+    Summary.Rates.avgA1(i) = nanmean(EACHchRESP(i).A1resp);
+    Summary.Rates.avgA2(i) = nanmean(EACHchRESP(i).A2resp);
+
+end     
 % end
-  
 
 %All SC att idx plot
 figure; hold on;
@@ -120,10 +117,9 @@ xlabel('SC Attention Indices')
 ylabel('Number of units')
 title('SC All Spatial Atttention Indices')
 
-    %thisname=['popV1AllAttIDXHist'];
-    %exportfig(gcf,thisname,'Format','eps','Width',8,'Height',6,'FontSize',12,'Color','cmyk','FontMode', 'fixed','LineWidth',2)
+%thisname=['popV1AllAttIDXHist'];
+%exportfig(gcf,thisname,'Format','eps','Width',8,'Height',6,'FontSize',12,'Color','cmyk','FontMode', 'fixed','LineWidth',2)
 
 [p,h]=signrank(Summary.Rates.AttIndex)
-
 
 end

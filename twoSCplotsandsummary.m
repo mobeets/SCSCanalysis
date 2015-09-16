@@ -23,7 +23,7 @@ function Summary = twoSCplotsandsummary(ReducedDataSet)
 % out the dead channels below...
 % index it, both probes are SC
 % get the counts for each condition
-[EACHchRESP] = GetAvgRates(ReducedDataSet,0);
+EACHchRESP = GetAvgRates(ReducedDataSet, 0);
 EACHchRESPidx = [EACHchRESP{[1:17 19:2:31 ([1:17 19:2:31]+32)]}];
 
 %if i've indexed above, this is correct:
