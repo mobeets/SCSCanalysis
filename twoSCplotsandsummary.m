@@ -353,8 +353,9 @@ Summary.Matrices.CorrMatrixA2 = CorrMatrixA2;
 
 %All SC att idx plot
 figure; hold on;
-set(gca,'Tick','out');
-[h,hist_xvals,n]=mchist(Summary.Rates.AttIndex,-.975:.05:.975,1,0);
+set(gca,'TickDir','out');
+[h,hist_xvals,n]=mchist(Summary.Rates.AttIndex,-.975:.05:.975,0);
+% [h,hist_xvals,n]=mchist(Summary.Rates.AttIndex,-.975:.05:.975,1,0);
 set(h,'facecolor','none')
 [n1 hist_xvals1] =hist(Summary.Rates.AttIndex(find(Summary.Rates.SigFlg==1)),-.975:.05:.975,1,0);
 i = bar(hist_xvals1,n1);
