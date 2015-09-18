@@ -5,6 +5,7 @@ function out = pmf(y)
 
 % ix0 = [y.ChangeLocation] == 1;
 ix = ~[y.IsInstruction] & [y.IsValid] & ~[y.IsCatchTrial];
+y = y(ix);
 % y0 = y(ix & ix0);
 
 % 1 = hit, 4 = miss, 21/24 = hits/miss @ invalid, 9 = false alarm
@@ -20,7 +21,7 @@ ylabel('# trials');
 
 out = cell(2,3);
 for jj = 1:2    
-    y0 = y(ix & [y.ChangeLocation] == jj);
+    y0 = y([y.ChangeLocation] == jj);
     xs = unique([y0.ThisOrientationChange]);
     ys = nan(size(xs));
     zs = nan(size(xs));

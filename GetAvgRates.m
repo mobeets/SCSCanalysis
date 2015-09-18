@@ -13,8 +13,11 @@ for q = 1:numchannels
     % I will put spikes in these
     A1resp = [];
     A2resp = [];
-    A1idx = []; % (trial_index, pulse_index) for each entry in A1resp
-    A2idx = [];
+    A1_trialIdx = []; % for each entry in A1resp
+    A2_trialIdx = [];
+    A1_pulseIdx = []; % -1, -2, ... - relative to change pulse
+    A2_pulseIdx = [];
+    
     BASELINE = [];
     
     for i = 1:length(ReducedDataSet) % go through all trials
@@ -52,11 +55,13 @@ for q = 1:numchannels
                     if ReducedDataSet(i).AttentionLocation == 1
                         A1resp = [A1resp ...
                             ReducedDataSet(i).SpikeCounts(q,j)];
-                        A1idx = [A1idx; [i j]];
+                        A1_trialIdx = [A1_trialIdx; i];
+                        A1_pulseIdx = [A1_pulseIdx; -(ChangeRow-j)];
                     elseif ReducedDataSet(i).AttentionLocation == 2
                         A2resp = [A2resp ...
                             ReducedDataSet(i).SpikeCounts(q,j)];
-                        A2idx = [A2idx; [i j]];
+                        A2_trialIdx = [A2_trialIdx; i];
+                        A2_pulseIdx = [A2_pulseIdx; -(ChangeRow-j)];
                     end
                 end
 
@@ -70,8 +75,10 @@ for q = 1:numchannels
 % put these into a useful struct
 EACHchRESP{q}.A1resp = A1resp;
 EACHchRESP{q}.A2resp = A2resp;
-EACHchRESP{q}.A1idx = A1idx';
-EACHchRESP{q}.A2idx = A2idx';
+EACHchRESP{q}.A1_trialIdx = A1_trialIdx;
+EACHchRESP{q}.A2_trialIdx = A2_trialIdx;
+EACHchRESP{q}.A1_pulseIdx = A1_pulseIdx;
+EACHchRESP{q}.A2_pulseIdx = A2_pulseIdx;
 EACHchRESP{q}.BASELINE = BASELINE;
 
 end
