@@ -15,7 +15,11 @@ for q = 1:numchannels
     A2resp = [];
     A1_trialIdx = []; % for each entry in A1resp
     A2_trialIdx = [];
-    A1_pulseIdx = []; % -1, -2, ... - relative to change pulse
+
+    A1_revPulseIdx = []; % -1, -2, ... - relative to change pulse
+    A2_revPulseIdx = [];
+    
+    A1_pulseIdx = []; % 1, 2, ... - relative to start of trial
     A2_pulseIdx = [];
     
     BASELINE = [];
@@ -56,12 +60,14 @@ for q = 1:numchannels
                         A1resp = [A1resp ...
                             ReducedDataSet(i).SpikeCounts(q,j)];
                         A1_trialIdx = [A1_trialIdx; i];
-                        A1_pulseIdx = [A1_pulseIdx; -(ChangeRow-j)];
+                        A1_pulseIdx = [A1_pulseIdx; j];
+                        A1_revPulseIdx = [A1_revPulseIdx; -(ChangeRow-j)];
                     elseif ReducedDataSet(i).AttentionLocation == 2
                         A2resp = [A2resp ...
                             ReducedDataSet(i).SpikeCounts(q,j)];
                         A2_trialIdx = [A2_trialIdx; i];
-                        A2_pulseIdx = [A2_pulseIdx; -(ChangeRow-j)];
+                        A2_pulseIdx = [A2_pulseIdx; j];
+                        A2_revPulseIdx = [A2_revPulseIdx; -(ChangeRow-j)];
                     end
                 end
 
@@ -79,6 +85,8 @@ EACHchRESP{q}.A1_trialIdx = A1_trialIdx;
 EACHchRESP{q}.A2_trialIdx = A2_trialIdx;
 EACHchRESP{q}.A1_pulseIdx = A1_pulseIdx;
 EACHchRESP{q}.A2_pulseIdx = A2_pulseIdx;
+EACHchRESP{q}.A1_revPulseIdx = A1_revPulseIdx;
+EACHchRESP{q}.A2_revPulseIdx = A2_revPulseIdx;
 EACHchRESP{q}.BASELINE = BASELINE;
 
 end

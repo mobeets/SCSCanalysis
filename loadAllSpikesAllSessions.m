@@ -21,4 +21,4 @@ for ii = 1:numel(fns)
     end
 end
 
-save('../SCData/allSpikes.mat', ds);
+save('../SCData/allSpikes.mat', 'ds');

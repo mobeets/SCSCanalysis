@@ -1,7 +1,10 @@
-function assessSpikesPerPulse(R, LChs, RChs)
+function assessSpikesPerPulse(R, LChs, RChs, doRevPulse)
+if nargin < 4
+    doRevPulse = true;
+end
+
 % slope in response
-figure(1); hold on;
-xlabel('pulses before change');
+xlabel('pulse index');
 ylabel('avg (over trials): spikes on pulse relative to mean across pulses');
 
 R0 = R;
@@ -15,16 +18,24 @@ for ii = 1:numel(R0)
     if isL
         ry = r.A2resp;
         iy = r.A2_trialIdx;
-        jy = r.A2_pulseIdx;
+        if doRevPulse
+            jy = r.A2_revPulseIdx;
+        else
+            jy = r.A2_pulseIdx;
+        end
     else
         ry = r.A1resp;
         iy = r.A1_trialIdx;
-        jy = r.A1_pulseIdx;
+        if doRevPulse
+            jy = r.A1_revPulseIdx;
+        else
+            jy = r.A1_pulseIdx;
+        end
     end
     [xss, yss] = spikesPerPulse(ry, iy, jy);
     ys0 = nanmean(yss');
-    zs(ii) = (ys0(end)-ys0(6))/ys0(6);
-    zs2(ii) = (mean(r.A1resp) - mean(r.A2resp));
+%     zs(ii) = (ys0(end)-ys0(6))/ys0(6);
+%     zs2(ii) = (mean(r.A1resp) - mean(r.A2resp));
     if isL
         zs2(ii) = -zs2(ii)/mean(r.A2resp);
         clr = 'b';
@@ -33,13 +44,20 @@ for ii = 1:numel(R0)
         clr = 'r';
     end
     
-    xs0 = -abs(min(jy)):-1;
+    xs0 = 1:max(abs(jy));
 %     ys0 = (ys0 - ys0(end))/ys0(end);
 % 	plot(xs0(6:end), ys0(6:end));
-    figure(1); hold on;
-    plot(xs0(6:end), ys0(6:end) - mean(ys0(6:end)), clr);
-    figure(2); hold on;
-    scatter(zs(ii), zs2(ii), 20, clr);
+%     figure; hold on;
+    
+    if doRevPulse
+        xs0 = min(jy):max(jy);
+%         plot(xs0, ys0 - nanmean(ys0), clr);
+        plot(xs0(6:end), ys0(6:end) - mean(ys0(6:end)), clr);
+    else
+        plot(xs0, ys0 - nanmean(ys0), clr);
+    end
+%     figure(2); hold on;
+%     scatter(zs(ii), zs2(ii), 20, clr);
 end
 
 end
@@ -48,16 +66,22 @@ function [xss, yss] = spikesPerPulse(ry, iy, jy)
 
 ry = ry';
 ts = unique(iy);
-xss = nan(abs(min(jy)),numel(ts));
-yss = nan(abs(min(jy)),numel(ts));
+xss = nan(max(abs(jy)),numel(ts));
+yss = nan(max(abs(jy)),numel(ts));
+doBackfill = any(jy < 0);
 for jj = 1:numel(ts)
    ry0 = ry(iy == ts(jj));
    jy0 = jy(iy == ts(jj));
    [~, ix] = sort(jy0);
    xs = jy0(ix);
    ys = ry0(ix);
-   xss(end-numel(xs)+1:end,jj) = xs';
-   yss(end-numel(ys)+1:end,jj) = ys';% - mean(ys))';
+   if doBackfill % negative pulse inds are backfilled
+       xss(end-numel(xs)+1:end,jj) = xs';
+       yss(end-numel(ys)+1:end,jj) = ys';% - mean(ys))';
+   else
+       xss(1:numel(xs),jj) = xs';
+       yss(1:numel(ys),jj) = ys';% - mean(ys))';
+   end
 end
 
 end

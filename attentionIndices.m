@@ -31,7 +31,7 @@ end
 if nargin < 4
     A2str = 'A2resp';
 end
-    
+
 for i = 1:length(EACHchRESP)
 
     if i <=24  %left probe, right RF.  att 2 is in
@@ -47,6 +47,9 @@ for i = 1:length(EACHchRESP)
     Rates.countsA1{i} = EACHchRESP(i).(A1str);
     Rates.countsA2{i} = EACHchRESP(i).(A2str);
 
+    if isempty(Rates.countsA1{i}) || isempty(Rates.countsA2{i})
+        continue;
+    end
     [p,h]=ranksum(Rates.countsA1{i},Rates.countsA2{i});
     Rates.SigFlg(i) = h;
 
@@ -55,6 +58,10 @@ for i = 1:length(EACHchRESP)
 
 end     
 % end
+
+if ~any(~isnan(Rates.AttIndex))
+    return;
+end
 
 %All SC att idx plot
 figure; hold on;

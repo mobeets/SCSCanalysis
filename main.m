@@ -12,18 +12,22 @@ y = x.ReducedDataSet;
 %    R = mean(spikes(ChangeLocation == 2))
 % 5. (L-R)/(L+R)
 
-[R, LChs, RChs] = loadResponses(y,0); % 0 means ignore misses
+% [R, LChs, RChs] = loadResponses(y,0); % 0 means ignore misses
 
-ns = -7:-1;
+ns = -7:7;
 atts = nan(numel(ns),1);
 for ii = 1:numel(ns)
     R2 = addResponsesForFixedPulse(R, ns(ii));
-    str1 = ['A1resp_pulse_n' num2str(abs(ns(ii)))];
-    str2 = ['A2resp_pulse_n' num2str(abs(ns(ii)))];
+    valstr = strrep(num2str(ns(ii)), '-', 'n');
+    str1 = ['A1resp_pulse_' valstr];
+    str2 = ['A2resp_pulse_' valstr];
     Rates = attentionIndices(R2, str1, str2);
     atts(ii) = mean(Rates.AttIndex);
 end
-figure; plot(ns, atts);
+figure; hold on;
+plot(ns, atts); scatter(ns, atts);
+xlabel('pulse index used to compute attention indices');
+ylabel('mean attention index');
 
 %% attention IN decreases noise correlations within a hemisphere,
 %   and low correlations in general across hemispheres
