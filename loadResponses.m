@@ -12,7 +12,7 @@ function [EACHchRESPidx, LChs, RChs] = loadResponses(ReducedDataSet, ...
 % index it, both probes are SC
 % get the counts for each condition
 EACHchRESP = GetAvgRates(ReducedDataSet, includeMiss);
-EACHchRESPidx = [EACHchRESP{[1:17 19:2:31 ([1:17 19:2:31]+32)]}];
+EACHchRESPidx = [EACHchRESP{newIndicesForGoodChannels()}];
 
 %if i've indexed above, this is correct:
 LChs = 1:24;

@@ -2,6 +2,9 @@ function [xs, Ys, Ys0] = showMapData(D, ystrs, cellind)
     if nargin < 2 || isempty(ystrs)
         ystrs = {'VisRespstimcounts', 'SaccRespstimcounts'};
     end
+    if nargin < 3
+        cellind = nan;
+    end
     
     fs = {'Orientation', 'SpatialFrequency', 'Contrast', ...
         'PhaseVelocity', 'StimRadius'};
@@ -14,15 +17,19 @@ function [xs, Ys, Ys0] = showMapData(D, ystrs, cellind)
     xs = unique(xss', 'rows');
     Ys = cell(numel(ystrs),1);
     Ys0 = cell(numel(ystrs),1);
-    figure; title(['cell #' num2str(cellind)]);
-    for ii = 1:numel(ystrs)
-        subplot(numel(ystrs),1,ii);
+    if ~isnan(cellind)
+        figure; title(['cell #' num2str(cellind)]);
+    end
+    for ii = 1:numel(ystrs)        
         ystr = ystrs{ii};
         ys = getMeanResp(D, xs, D.(ystr));
         y0 = nanmean(D.BaselineRespstimcounts,2);
         ys0 = ys - repmat(y0', size(ys,1), 1);
-        plotMeanResp(xs, ys0, cellind);
-        xlabel(ystr);
+        if ~isnan(cellind)
+            subplot(numel(ystrs),1,ii);
+            plotMeanResp(xs, ys0, cellind);
+            xlabel(ystr);
+        end        
         Ys{ii} = ys;
         Ys0{ii} = ys0;
     end
