@@ -13,9 +13,13 @@ for ii = 1:numel(ds)
     
     subplot(nr, nc, 2*(ii-1)+1); hold on;
     hist(inds(d.LChs));
-    xlabel([fn(1:6) '-L']);
+    xlabel([fn(1:8) '-L']);
+    xlim([-1 1]);
+    
     subplot(nr, nc, 2*(ii-1)+2); hold on;
     hist(inds(d.RChs));
-    xlabel([fn(1:6) '-R']);
+    xlabel([fn(1:8) '-R']);
+    xlim([-1 1]);
+    
     ix{ii} = inds;
 end
