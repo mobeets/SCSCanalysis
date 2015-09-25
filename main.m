@@ -1,6 +1,6 @@
 x = load('../SCData/ST150914task0002_reduceddata.mat');
 y = x.ReducedDataSet;
-[R, LChs, RChs] = loadResponses(y,0);
+[R, LChs, RChs] = io.loadResponses(y,0);
 
 %% behavioral effect
 
@@ -14,14 +14,15 @@ y = x.ReducedDataSet;
 
 % [R, LChs, RChs] = loadResponses(y,0); % 0 means ignore misses
 
-ns = -7:7;
+R = ds(end-1).R;
+% ns = -7:7;
+ns = -1;
 atts = nan(numel(ns),1);
+Atts = cell(numel(ns), 1);
 for ii = 1:numel(ns)
     R2 = addResponsesForFixedPulse(R, ns(ii));
-    valstr = strrep(num2str(ns(ii)), '-', 'n');
-    str1 = ['A1resp_pulse_' valstr];
-    str2 = ['A2resp_pulse_' valstr];
-    Rates = attentionIndices(R2, str1, str2);
+    Rates = attentionIndices(R2, ns(ii));
+    Atts{ii} = Rates.AttIndex;
     atts(ii) = mean(Rates.AttIndex);
 end
 figure; hold on;

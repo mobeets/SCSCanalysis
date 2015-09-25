@@ -24,12 +24,17 @@ function Rates = attentionIndices(EACHchRESP, A1str, A2str)
 %     end
 % else
     %get all avg rates for attend in Summary
-    
-if nargin < 3
+
+if nargin < 2
     A1str = 'A1resp';
 end
-if nargin < 4
+if nargin < 3
     A2str = 'A2resp';
+end
+if isnumeric(A1str) % convert things like -1 to the correct str
+    valstr = strrep(num2str(A1str), '-', 'n');
+    A1str = ['A1resp_pulse_' valstr];
+    A2str = ['A2resp_pulse_' valstr];
 end
 
 for i = 1:length(EACHchRESP)
@@ -64,7 +69,8 @@ if ~any(~isnan(Rates.AttIndex))
 end
 
 %All SC att idx plot
-figure; hold on;
+% figure;
+hold on;
 set(gca,'TickDir','out');
 [h,hist_xvals,n]=mchist(Rates.AttIndex,-.975:.05:.975,0);
 % [h,hist_xvals,n]=mchist(Summary.Rates.AttIndex,-.975:.05:.975,1,0);
@@ -84,6 +90,6 @@ title('SC All Spatial Atttention Indices')
 %thisname=['popV1AllAttIDXHist'];
 %exportfig(gcf,thisname,'Format','eps','Width',8,'Height',6,'FontSize',12,'Color','cmyk','FontMode', 'fixed','LineWidth',2)
 
-[p,h]=signrank(Rates.AttIndex)
+[p,h]=signrank(Rates.AttIndex);
 
 end

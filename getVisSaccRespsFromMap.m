@@ -1,9 +1,9 @@
-function [Ys, Ys0] = getVisSaccRespsFromMap(D, T1, T2, targPrefs)
+function [Ys, Ys0, Ysb] = getVisSaccRespsFromMap(D, T1, T2, targPrefs)
 % D is the loaded map file
 % targPrefs is a vector of 1/2 specifying preferred stimulus for each cell
 % 
 
-[xs, ys, ys0] = showMapData(D, {}, nan);
+[xs, ys, ys0, Ysb] = showMapData(D, {}, nan);
 
 dfcn = @(x) (@(a) sqrt(sum((a-x).^2)));
 T1d = cellfun(dfcn(T1), num2cell(xs,2));

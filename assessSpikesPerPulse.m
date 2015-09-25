@@ -1,15 +1,23 @@
-function assessSpikesPerPulse(R, LChs, RChs, doRevPulse)
+function [RY, RX] = assessSpikesPerPulse(R, LChs, RChs, doRevPulse, doPlot)
 if nargin < 4
     doRevPulse = true;
 end
+if nargin < 5
+    doPlot = true;
+end
 
-% slope in response
-xlabel('pulse index');
-ylabel('avg (over trials): spikes on pulse relative to mean across pulses');
+if doPlot
+    % slope in response
+    xlabel('pulse index');
+    ylabel('avg (over trials): spikes on pulse relative to mean across pulses');
+    hold on;
+end
 
 R0 = R;
 zs = nan(numel(R0),1);
 zs2 = nan(numel(R0),1);
+RX = cell(numel(R0),1);
+RY = cell(numel(R0),1);
 for ii = 1:numel(R0)
     r = R0(ii);
     ma = nanmean(r.A1resp);
@@ -44,7 +52,7 @@ for ii = 1:numel(R0)
         clr = 'r';
     end
     
-    xs0 = 1:max(abs(jy));
+    xs0 = 1:max(abs(jy));    
 %     ys0 = (ys0 - ys0(end))/ys0(end);
 % 	plot(xs0(6:end), ys0(6:end));
 %     figure; hold on;
@@ -52,13 +60,33 @@ for ii = 1:numel(R0)
     if doRevPulse
         xs0 = min(jy):max(jy);
 %         plot(xs0, ys0 - nanmean(ys0), clr);
-        plot(xs0(6:end), ys0(6:end) - mean(ys0(6:end)), clr);
+        if doPlot
+            plot(xs0(6:end), ys0(6:end) - mean(ys0(6:end)), clr);
+        end
     else
-        plot(xs0, ys0 - nanmean(ys0), clr);
+        if doPlot
+            plot(xs0, ys0 - nanmean(ys0), clr);
+        end
     end
+    if ii == 1
+        Rx = xs0;
+    end
+    RX{ii} = xs0;
+    RY{ii} = ys0;
 %     figure(2); hold on;
 %     scatter(zs(ii), zs2(ii), 20, clr);
 end
+
+if var(cellfun(@(x) numel(x), RX)) > 0
+    maxx = max(cellfun(@(x) numel(x), RX));
+    for ii = 1:numel(RX)
+        if numel(RX{ii}) < maxx
+            RY{ii} = [RY{ii} nan(1, maxx - numel(RX{ii}))];
+        end
+    end    
+end
+RX = Rx;
+RY = cell2mat(RY);
 
 end
 

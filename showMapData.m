@@ -1,4 +1,4 @@
-function [xs, Ys, Ys0] = showMapData(D, ystrs, cellind)
+function [xs, Ys, Ys0, Yb] = showMapData(D, ystrs, cellind)
     if nargin < 2 || isempty(ystrs)
         ystrs = {'VisRespstimcounts', 'SaccRespstimcounts'};
     end
@@ -20,11 +20,11 @@ function [xs, Ys, Ys0] = showMapData(D, ystrs, cellind)
     if ~isnan(cellind)
         figure; title(['cell #' num2str(cellind)]);
     end
+    Yb = nanmean(D.BaselineRespstimcounts,2);
     for ii = 1:numel(ystrs)        
         ystr = ystrs{ii};
-        ys = getMeanResp(D, xs, D.(ystr));
-        y0 = nanmean(D.BaselineRespstimcounts,2);
-        ys0 = ys - repmat(y0', size(ys,1), 1);
+        ys = getMeanResp(D, xs, D.(ystr));        
+        ys0 = ys - repmat(Yb', size(ys,1), 1);        
         if ~isnan(cellind)
             subplot(numel(ystrs),1,ii);
             plotMeanResp(xs, ys0, cellind);
