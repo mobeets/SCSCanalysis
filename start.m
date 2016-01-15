@@ -4,14 +4,17 @@
 % 
 % 
 
-fn = '../SCData/ST150914task0002_reduceddata.mat';
+fn = 'data/ST150914task0002_reduceddata.mat';
 x = load(fn);
-X = x.ReducedDataSet;
-Xs = io.dropNonstimFields(X);
+X1 = x.ReducedDataSet;
+% Xs = io.dropNonstimFields(X);
+X = io.filterExp(X1, false);
+[~, Chs] = io.newIndicesForGoodChannels();
+Y = io.loadSpikeCounts(X, Chs);
 
 %% CELL INFO
 
-[~,~,~, YL, YR] = io.loadResponses(X, false); % correct trials only
+[tm,~,~, YL, YR] = io.loadResponses(X, false); % correct trials only
 
 %% DAILY SUMMARIES
 % 
